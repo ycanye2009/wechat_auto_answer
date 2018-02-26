@@ -1,0 +1,32 @@
+智力超人脚本教程
+一、Fiddler设置
+Fiddler  Tools-Options...
+General 3-6 打勾， Do nothing
+HTTPS	1，2打勾，from remote clients only，3Ignore打勾
+Connections port 8888 2Allow，3Reuse，4Reuse打勾，5Act，6Monitor打勾
+设置完成重启Fiddler
+二、手机代理连接笔记本，端口8888
+三、手机浏览器输入笔记本的IP加8888端口
+四、笔记本Fiddler
+Fiddler菜单 >> Rules >> Customize Rules。在打开的文件中找到OnBeforeResponse这个方法，在方法末尾加上如下代码：
+
+		if (oSession.fullUrl.Contains("quan.qq.com")){
+			oSession.utilDecodeResponse();//消除保存的请求可能存在乱码的情况
+			var fso;
+			var file;
+			fso = new ActiveXObject("Scripting.FileSystemObject");
+			//文件保存路径，可自定义
+			file = fso.OpenTextFile("E:\\Git\\wechat_auto_answer\\Session.txt",2 ,true, -2);
+			file.writeLine(oSession.GetResponseBodyAsString());
+			file.close();
+			}
+!!!!!注意文件路径
+OpenTextFile方法中的第一个参数为第二步项目所在位置，即指定Fiddler将数据包内容保存在项目目录下的的Session.txt中。 
+
+五、 运行项目中auto_answer.py，打开智力超人开始对战。程序会自动搜索题目，然后显示搜索结果中各个答案出现的次数，以供判断。
+
+注：
+运行提示没有watchdog模块，
+cmd中输入
+pip install watchdog
+回车

@@ -23,7 +23,15 @@ def start_work():
     try:
         res = get_data()
         print(res['content'])
+        print(res['options'])
         print(ask(res['content'],res['options']))
+        print('')
+        dbc = sys.path[0] + os.path.sep + "题库.txt"
+        with open(dbc,'a',encoding='utf-8') as fw:
+            fw.write(str(res['content'])+'\n')
+            fw.write(str(res['options'])+'\n')
+            fw.write(str(ask(res['content'],res['options']))+'\n')
+            fw.write('\n')
     except:
         pass
 
@@ -53,11 +61,15 @@ def ask(question, options):
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36"}
         content = content + requests.get(url, headers=headers).text
     answer = []
+    max=0
+    cnt=0
     for option in options:
         count = content.count(option)
-        answer.append(option + ' [' + str(count) + ']')
+        cnt=cnt+1
+        if max<=count:
+                max=count
+                answer.append(str(cnt)+'!'+option + ' <' + str(count) + '>')
     return answer
-
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else '.'
     event_handler = LoggingEventHandler()
